@@ -1,0 +1,7 @@
+.DS_Store
+.ipynb_checkpoints
+*.pyc
+__pycache__
+.success
+*.log
+credentials.yml
