@@ -1,0 +1,10 @@
+name: cf-demo
+dependencies:
+- pip=8.1.2=py35_0
+- flask=0.11.1=py35_0
+- pillow=3.2.0=py35_2
+- numpy=1.11.0=py35_blas_openblas_201
+- redis=3.2.0=0
+- h5py=2.6.0=np111py35_4
+- pip:
+  - keras==1.0.5

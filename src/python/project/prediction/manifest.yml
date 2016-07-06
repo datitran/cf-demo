@@ -1,0 +1,9 @@
+---
+applications:
+- name: cf-demo
+  memory: 1GB
+  disk_quota: 1GB
+  random-route: false
+  buildpack: python_buildpack
+  command: python prediction_app.py
+
