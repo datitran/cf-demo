@@ -7,7 +7,26 @@ from keras.models import model_from_json
 from keras.optimizers import RMSprop
 
 app = Flask(__name__)
-r = redis.StrictRedis(host="127.0.0.1", port=6379, db=0)
+
+# Get port from environment variable or choose 9099 as local default
+port = int(os.getenv("PORT", 9099))
+
+# Get Redis credentials
+if "VCAP_SERVICES" in os.environ:
+    services = json.loads(os.getenv("VCAP_SERVICES"))
+    redis_env = services["rediscloud"][0]["credentials"]
+else:
+    redis_env = dict(hostname="localhost", port=6379, password="")
+redis_env["host"] = redis_env["hostname"]
+del redis_env["hostname"]
+redis_env["port"] = int(redis_env["port"])
+
+# Connect to redis
+try:
+    r = redis.StrictRedis(**redis_env)
+    r.info()
+except redis.ConnectionError:
+    r = None
 
 def get_model(redis):
     """Get model from redis and compile it."""
@@ -37,7 +56,7 @@ def main():
 @app.route("/prediction", methods=["POST"])
 def prediction():
     """
-    curl -i -X POST -F files=@four_test.png http://127.0.0.1:5000/prediction
+    curl -i -X POST -F files=@four_test.png http://0.0.0.0:9999/prediction
     """
     if request.method == "POST":
         image = request.files["files"]
@@ -47,4 +66,4 @@ def prediction():
         return str(prediction[0])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
