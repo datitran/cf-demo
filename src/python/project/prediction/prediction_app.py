@@ -1,5 +1,7 @@
 import os
+import sys
 import redis
+import logging
 import numpy as np
 from flask import Flask, request
 from PIL import Image, ImageOps
@@ -7,6 +9,9 @@ from keras.models import model_from_json
 from keras.optimizers import RMSprop
 
 app = Flask(__name__)
+
+# Set up logging
+logger = logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 # Get port from environment variable or choose 9099 as local default
 port = int(os.getenv("PORT", 9099))
@@ -25,8 +30,9 @@ redis_env["port"] = int(redis_env["port"])
 try:
     r = redis.StrictRedis(**redis_env)
     r.info()
-except redis.ConnectionError:
-    r = None
+except redis.ConnectionError as e:
+    logging.exception("Error connecting to Redis: %s", e)
+    raise e
 
 def get_model(redis):
     """Get model from redis and compile it."""
