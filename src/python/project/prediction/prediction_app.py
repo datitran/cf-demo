@@ -62,7 +62,7 @@ def main():
 @app.route("/prediction", methods=["POST"])
 def prediction():
     """
-    curl -i -X POST -F files=@four_test.png http://0.0.0.0:9999/prediction
+    curl -i -X POST -F files=@four_test.png http://0.0.0.0:9099/prediction
     """
     if request.method == "POST":
         image = request.files["files"]
