@@ -1,9 +1,11 @@
 ---
 applications:
-- name: cf-demo
+- name: cf-predict
   memory: 1GB
   disk_quota: 1GB
+  instances: 1
   random-route: false
-  buildpack: python_buildpack
+  buildpack: https://github.com/cloudfoundry/python-buildpack
   command: python prediction_app.py
-
+  services:
+    - redis-demo

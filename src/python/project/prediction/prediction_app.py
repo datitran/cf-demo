@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import redis
@@ -19,20 +20,16 @@ port = int(os.getenv("PORT", 9099))
 # Get Redis credentials
 if "VCAP_SERVICES" in os.environ:
     services = json.loads(os.getenv("VCAP_SERVICES"))
-    redis_env = services["rediscloud"][0]["credentials"]
+    redis_env = services["p-redis"][0]["credentials"]
 else:
     redis_env = dict(hostname="localhost", port=6379, password="")
-redis_env["host"] = redis_env["hostname"]
-del redis_env["hostname"]
-redis_env["port"] = int(redis_env["port"])
 
 # Connect to redis
 try:
     r = redis.StrictRedis(**redis_env)
     r.info()
-except redis.ConnectionError as e:
-    logging.exception("Error connecting to Redis: %s", e)
-    raise e
+except redis.ConnectionError:
+    r = None
 
 def get_model(redis):
     """Get model from redis and compile it."""
@@ -72,4 +69,4 @@ def prediction():
         return str(prediction[0])
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)
