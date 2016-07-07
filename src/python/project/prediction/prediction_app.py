@@ -22,7 +22,7 @@ if "VCAP_SERVICES" in os.environ:
     services = json.loads(os.getenv("VCAP_SERVICES"))
     redis_env = services["p-redis"][0]["credentials"]
 else:
-    redis_env = dict(hostname="localhost", port=6379, password="")
+    redis_env = dict(host="localhost", port=6379, password="")
 
 # Connect to redis
 try:
