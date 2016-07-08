@@ -1,0 +1,38 @@
+---
+resources:
+- name: data-science-ci
+  type: git
+  source:
+    uri: git@github.com:datitran/cf-demo.git
+    branch: master
+    private_key: {{private-key}}
+- name: pws
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    skip_cert_check: false
+
+jobs:
+- name: cf-predict
+  plan:
+  - get: data-science-ci
+    trigger: true
+  - task: run-and-test
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: continuumio/anaconda3
+      inputs:
+      - name: data-science-ci
+      run:
+        path: data-science-ci/run_tests.sh
+  - put: pws
+    params:
+      manifest: data-science-ci/src/python/project/prediction_app/manifest.yml
+      path: data-science-ci/src/python/project/prediction_app/
