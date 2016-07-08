@@ -2,7 +2,7 @@
 applications:
 - name: cf-predict
   memory: 1GB
-  disk_quota: 1GB
+  disk_quota: 2GB
   instances: 1
   random-route: false
   buildpack: https://github.com/cloudfoundry/python-buildpack
