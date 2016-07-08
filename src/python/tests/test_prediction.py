@@ -1,7 +1,7 @@
 import os
 import unittest
-import project.prediction.prediction_app as prediction_app
-from project.prediction.prediction_app import app
+import project.prediction_app.prediction as prediction
+from project.prediction_app.prediction import app
 from unittest.mock import patch
 from keras.models import model_from_json
 from keras.optimizers import RMSprop
@@ -15,7 +15,7 @@ def mock_get_model(redis=None):
               optimizer=RMSprop())
     return model
 
-@patch("project.prediction.prediction_app.get_model", mock_get_model)
+@patch("project.prediction_app.prediction.get_model", mock_get_model)
 class PredictionAppTest(unittest.TestCase):
 
     def setUp(self):
@@ -33,7 +33,7 @@ class PredictionAppTest(unittest.TestCase):
 
     def test_convert_image(self):
         """Test if the image was converted correctly."""
-        converted_image = prediction_app.convert_image(self.image)
+        converted_image = prediction.convert_image(self.image)
         self.assertAlmostEqual(converted_image.sum(), 46.129411764)
 
     def test_prediction_status(self):

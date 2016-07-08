@@ -11,9 +11,6 @@ from keras.optimizers import RMSprop
 
 app = Flask(__name__)
 
-# Set up logging
-logger = logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-
 # Get port from environment variable or choose 9099 as local default
 port = int(os.getenv("PORT", 9099))
 
