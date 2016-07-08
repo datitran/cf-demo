@@ -27,7 +27,7 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: continuumio/anaconda3
+          repository: datitran/cf-demo
       inputs:
       - name: data-science-ci
       run:

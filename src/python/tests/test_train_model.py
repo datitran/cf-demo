@@ -1,9 +1,11 @@
+import sys
 import numpy as np
 import unittest
 import project.modelling.train_model as modelling
 from keras.datasets import mnist
 from mockredis import MockRedis
 
+@unittest.skipUnless(sys.platform.startswith("darwin"), "requires MacOSX")
 class TrainModelTest(unittest.TestCase):
 
     def setUp(self):
@@ -12,7 +14,7 @@ class TrainModelTest(unittest.TestCase):
         self.redis = MockRedis()
 
     def test_transform_data(self):
-        """Test that the shape are correct after transformation."""
+        """Test that the shapes are correct after transformation."""
         X_train, X_test, y_train, y_test = modelling.transform_data(self.data, 10)
         self.assertEqual(X_train.shape[1], 784)
         self.assertEqual(X_test.shape[1], 784)
