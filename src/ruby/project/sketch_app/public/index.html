@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <meta charset=utf-8>
+    <title>Handwritten Digits Recognition</title>
+
+    <div class="tools">
+      <a href="#simple_sketch" data-tool="marker">Marker</a>
+      <a href="#simple_sketch" data-tool="eraser">Eraser</a>
+      <a href="#simple_sketch" data-download="png">Download</a>
+    </div>
+    <canvas id='simple_sketch' width='400' height='400' style='border: 2px solid black'></canvas>
+
+    <script src="/js/jquery-latest.js"></script>
+    <script src='/js/sketch.js'></script>
+    <script type='text/javascript'>
+      $(function() {
+        $('#simple_sketch').sketch();
+      });
+    </script>
+
+  </body>
+</html>
