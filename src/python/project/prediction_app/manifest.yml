@@ -6,6 +6,6 @@ applications:
   instances: 1
   random-route: false
   buildpack: https://github.com/cloudfoundry/python-buildpack
-  command: python prediction_app.py
+  command: python prediction.py
   services:
     - redis-demo
