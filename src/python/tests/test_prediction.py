@@ -22,9 +22,9 @@ class PredictionAppTest(unittest.TestCase):
         self.app = app.test_client()
         self.app.testing = True
         self.files = {"files": open(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "data/four_test.png"), "rb")}
+            os.path.abspath(__file__)), "data/four.png"), "rb")}
         self.image = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "data/four_test.png")
+            os.path.abspath(__file__)), "data/four.png")
 
     def test_main_page(self):
         """Test that the status code 200 is returned for get."""
@@ -34,7 +34,7 @@ class PredictionAppTest(unittest.TestCase):
     def test_convert_image(self):
         """Test if the image was converted correctly."""
         converted_image = prediction.convert_image(self.image)
-        self.assertAlmostEqual(converted_image.sum(), 46.129411764)
+        self.assertAlmostEqual(converted_image.sum(), 43.921568627450981)
 
     def test_prediction_status(self):
         """Test that the status code 200 is returned for post."""
@@ -45,3 +45,4 @@ class PredictionAppTest(unittest.TestCase):
         """Test that the right prediction is returned."""
         results = self.app.post("/prediction", data=self.files)
         self.assertEqual(results.get_data(as_text=True), "4")
+

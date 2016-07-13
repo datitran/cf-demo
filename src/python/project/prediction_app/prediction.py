@@ -5,7 +5,7 @@ import redis
 import logging
 import numpy as np
 from flask import Flask, request
-from PIL import Image, ImageOps
+from PIL import Image, ImageEnhance
 from keras.models import model_from_json
 from keras.optimizers import RMSprop
 
@@ -41,11 +41,13 @@ def get_model(redis):
     return model
 
 def convert_image(image):
-    """Invert the image and then transform it to 1-d vector."""
-    img = Image.open(image).convert("L")
-    inverted_img = ImageOps.invert(img)
-    data = np.asarray(inverted_img, dtype="int32")
-    rescaled_data = (data/255).reshape(28,28)
+    """Resize the image and then transform it to 1-d vector."""
+    img = Image.open(image).convert("RGBA")
+    img_array = np.asarray(img, dtype="int32")[:,:,3]
+    img_bw = Image.fromarray(img_array).convert("L")
+    resized_image = img_bw.resize((28,28), Image.ANTIALIAS)
+    brightness = ImageEnhance.Brightness(resized_image)
+    rescaled_data = np.asarray(brightness.enhance(2), dtype="int32") / 255
     stacked_data = np.vstack([rescaled_data.reshape(-1)])
     return stacked_data
 
