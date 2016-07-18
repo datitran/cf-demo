@@ -1,4 +1,5 @@
 import sys
+import datetime
 import numpy as np
 import unittest
 import project.modelling.train_model as modelling
@@ -12,6 +13,7 @@ class TrainModelTest(unittest.TestCase):
         np.random.seed(1337)
         self.data = mnist.load_data()
         self.redis = MockRedis()
+        self.date = str(datetime.date.today())
 
     def test_transform_data(self):
         """Test that the shapes are correct after transformation."""
@@ -34,7 +36,8 @@ class TrainModelTest(unittest.TestCase):
         results, model = modelling.evaluate_model(X_train, X_test, y_train,
                                                   y_test, 128, 1)
         modelling.save_model(model, self.redis)
-        self.assertEqual(self.redis.keys()[1].decode("UTF-8"), "model")
+        result = sorted(self.redis.keys())
+        self.assertEqual(result[0].decode("UTF-8"), "{}_model".format(self.date))
 
     def test_save_model_weights(self):
         """Test if the weights are stored correctly."""
@@ -42,4 +45,5 @@ class TrainModelTest(unittest.TestCase):
         results, model = modelling.evaluate_model(X_train, X_test, y_train,
                                                   y_test, 128, 1)
         modelling.save_model(model, self.redis)
-        self.assertEqual(self.redis.keys()[0].decode("UTF-8"), "weights")
+        result = sorted(self.redis.keys())
+        self.assertEqual(result[1].decode("UTF-8"), "{}_weights".format(self.date))

@@ -1,4 +1,5 @@
 import os
+import datetime
 import numpy as np
 np.random.seed(1337)
 import redis
@@ -48,10 +49,10 @@ def evaluate_model(X_train, X_test, y_train, y_test, batch_size, nb_epoch):
 
 def save_model(model, redis):
     json_string = model.to_json()
-    redis.set("model", json_string)
+    redis.set("{}_model".format(datetime.date.today()), json_string)
     model.save_weights("mnist_mlp.h5")
     with open("mnist_mlp.h5", "rb") as f:
-        redis.set("weights", f.read())
+        redis.set("{}_weights".format(datetime.date.today()), f.read())
     os.remove("mnist_mlp.h5")
 
 
