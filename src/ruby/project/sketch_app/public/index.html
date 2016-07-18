@@ -10,14 +10,46 @@
       <a href="#simple_sketch" data-tool="marker">Marker</a>
       <a href="#simple_sketch" data-tool="eraser">Eraser</a>
       <a href="#simple_sketch" data-download="png">Download</a>
+      <a id="predict-link" href="#simple_sketch">Predict</a>
     </div>
     <canvas id='simple_sketch' width='400' height='400' style='border: 2px solid black'></canvas>
-
+    <div id="prediction"></div>
     <script src="/js/jquery-latest.js"></script>
     <script src='/js/sketch.js'></script>
     <script type='text/javascript'>
       $(function() {
         $('#simple_sketch').sketch();
+
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        }
+
+        $("#predict-link").on("click", function() {
+          var dataUrl = $("#simple_sketch")[0].toDataURL();
+
+          var formData = new FormData();
+          formData.append('files', dataURLtoBlob(dataUrl));
+
+          $.ajax({
+            type: "POST",
+            url: "http://cf-predict.local.pcfdev.io/prediction",
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: 'json',
+            data: formData
+          }).done(function(data) {
+            $("#prediction").text(data);
+            console.log("success");
+          }).fail(function() {
+            console.log("fail");
+          });
+        });
       });
     </script>
 
