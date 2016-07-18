@@ -5,11 +5,13 @@ import redis
 import logging
 import numpy as np
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 from PIL import Image, ImageEnhance
 from keras.models import model_from_json
 from keras.optimizers import RMSprop
 
 app = Flask(__name__)
+cors = CORS(app)
 
 # Get port from environment variable or choose 9099 as local default
 port = int(os.getenv("PORT", 9099))
@@ -58,7 +60,7 @@ def main():
 @app.route("/prediction", methods=["POST"])
 def prediction():
     """
-    curl -i -X POST -F files=@four_test.png http://0.0.0.0:9099/prediction
+    curl -i -X POST -F files=@four.png http://0.0.0.0:9099/prediction
     """
     if request.method == "POST":
         image = request.files["files"]

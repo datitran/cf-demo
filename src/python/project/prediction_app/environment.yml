@@ -8,3 +8,4 @@ dependencies:
 - pip:
   - keras==1.0.5
   - redis==2.10.5
+  - flask-cors==2.1.2
