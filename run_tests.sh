@@ -2,6 +2,6 @@
 
 set -e
 
-cd data-science-ci
+cd cf-demo-testing
 nosetests -vs src/python/tests
 
