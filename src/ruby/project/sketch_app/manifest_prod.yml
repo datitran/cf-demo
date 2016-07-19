@@ -1,0 +1,9 @@
+---
+applications:
+- name: sketch-app
+  memory: 128M
+  instances: 1
+  random-route: false
+  command: bundle exec ruby sketch.rb
+  env:
+    PREDICTION_API: "http://number-predictor.local.pcfdev.io"

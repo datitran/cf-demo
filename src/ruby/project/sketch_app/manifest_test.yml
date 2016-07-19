@@ -1,9 +1,10 @@
 ---
 applications:
 - name: sketch-app
+  host: sketch-app-testing
   memory: 128M
   instances: 1
   random-route: false
   command: bundle exec ruby sketch.rb
   env:
-    PREDICTION_API: "http://cf-predict.local.pcfdev.io"
+    PREDICTION_API: "http://number-predictor-testing.local.pcfdev.io"
