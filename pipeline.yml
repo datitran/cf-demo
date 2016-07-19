@@ -1,26 +1,48 @@
 ---
 resources:
-- name: data-science-ci
+- name: cf-demo-testing
   type: git
   source:
     uri: git@github.com:datitran/cf-demo.git
     branch: master
     private_key: {{private-key}}
-- name: pws
+
+- name: cf-demo-production
+  type: git
+  source:
+    uri: git@github.com:datitran/cf-demo.git
+    branch: master
+    private_key: {{private-key}}
+    tag_filter: "v*"
+
+- name: pcfdev-testing
   type: cf
   source:
-    api: {{cf-api}}
-    username: {{cf-username}}
-    password: {{cf-password}}
-    organization: {{cf-organization}}
-    space: {{cf-space}}
+    api: {{cf-api-testing}}
+    username: {{cf-username-testing}}
+    password: {{cf-password-testing}}
+    organization: {{cf-organization-testing}}
+    space: {{cf-space-testing}}
+    skip_cert_check: true
+
+- name: pcfdev-production
+  type: cf
+  source:
+    api: {{cf-api-production}}
+    username: {{cf-username-production}}
+    password: {{cf-password-production}}
+    organization: {{cf-organization-production}}
+    space: {{cf-space-production}}
     skip_cert_check: true
 
 jobs:
-- name: cf-predict
+- name: run-test-predict-app
   plan:
-  - get: data-science-ci
+  - get: cf-demo-testing
     trigger: true
+  - get: cf-demo-production
+    trigger: false
+
   - task: run-and-test
     config:
       platform: linux
@@ -29,10 +51,46 @@ jobs:
         source:
           repository: datitran/cf-demo
       inputs:
-      - name: data-science-ci
+      - name: cf-demo-testing
       run:
-        path: data-science-ci/run_tests.sh
-  - put: pws
-    params:
-      manifest: data-science-ci/src/python/project/prediction_app/manifest.yml
-      path: data-science-ci/src/python/project/prediction_app/
+        path: cf-demo-testing/run_tests.sh
+
+- name: deploy-predict-app-testing
+  plan:
+    - get: cf-demo-testing
+      trigger: true
+      passed: [run-test-predict-app]
+    - put: pcfdev-testing
+      params:
+        manifest: cf-demo-testing/src/python/project/prediction_app/manifest_test.yml
+        path: cf-demo-testing/src/python/project/prediction_app/
+
+- name: deploy-predict-app-production
+  plan:
+    - get: cf-demo-production
+      trigger: false
+      passed: [run-test-predict-app]
+    - put: pcfdev-production
+      params:
+        manifest: cf-demo-production/src/python/project/prediction_app/manifest_prod.yml
+        path: cf-demo-production/src/python/project/prediction_app/
+
+- name: deploy-sketch-app-testing
+  plan:
+    - get: cf-demo-testing
+      trigger: true
+      passed: [deploy-predict-app-testing]
+    - put: pcfdev-testing
+      params:
+        manifest: cf-demo-testing/src/ruby/project/sketch_app/manifest_test.yml
+        path: cf-demo-testing/src/ruby/project/sketch_app/
+
+- name: deploy-sketch-app-production
+  plan:
+    - get: cf-demo-production
+      trigger: false
+      passed: [deploy-predict-app-production]
+    - put: pcfdev-production
+      params:
+        manifest: cf-demo-production/src/ruby/project/sketch_app/manifest_prod.yml
+        path: cf-demo-production/src/ruby/project/sketch_app/
