@@ -14,4 +14,4 @@ ENV PATH /opt/conda/bin:$PATH
 
 RUN conda install -y nose numpy flask pillow h5py
 
-RUN pip install redis mockredispy git+git://github.com/Theano/Theano.git git+git://github.com/fchollet/keras.git
+RUN pip install redis mockredispy git+git://github.com/Theano/Theano.git git+git://github.com/fchollet/keras.git flask-cors
