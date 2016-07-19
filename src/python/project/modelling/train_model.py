@@ -1,3 +1,4 @@
+import sys
 import os
 import datetime
 import numpy as np
@@ -9,7 +10,8 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import RMSprop
 
-r = redis.StrictRedis(host="redis.local.pcfdev.io", port=55098, password="c2aa5c33-9099-4d37-a27f-fbb8af882e2d")
+r_test = redis.StrictRedis(host="redis.local.pcfdev.io", port=44122, password="66e6a5fa-c032-4cdf-99d9-614bcc3c2cc2")
+r_prod = redis.StrictRedis(host="redis.local.pcfdev.io", port=47261, password="497b22bc-6994-4213-ab40-25abcdc3843d")
 
 NB_CLASSES = 10
 BATCH_SIZE = 128
@@ -63,4 +65,7 @@ if __name__ == "__main__":
     results, model = evaluate_model(X_train, X_test, y_train, y_test,
                                     BATCH_SIZE, NB_EPOCH)
 
-    save_model(model, r)
+    if sys.argv[1] == "prod":
+        save_model(model, r_prod)
+    else:
+        save_model(model, r_test)
