@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <style type="text/css">
+    .tools {
+        margin-bottom: 10px;
+      }
+    .tools a {
+        border: 1px solid black;
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        vertical-align: middle;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        color: black;
+        font-weight: bold;
+      }
+    #prediction {
+        font-size: 2000%;
+        text-align: left;
+      }
+    </style>
   </head>
   <body>
     <meta charset=utf-8>
@@ -12,8 +33,10 @@
       <a href="#simple_sketch" data-download="png">Download</a>
       <a id="predict-link" href="#simple_sketch">Predict</a>
     </div>
-    <canvas id='simple_sketch' width='400' height='400' style='border: 2px solid black'></canvas>
-    <div id="prediction"></div>
+    <div style="width:600px;">
+      <canvas id='simple_sketch' width='400' height='400' style='border: 1px solid black; float:left;'></canvas>
+      <div id="prediction" style='float:right;'></div>
+    </div>
     <script src="/js/jquery-latest.js"></script>
     <script src='/js/sketch.js'></script>
     <script type='text/javascript'>
