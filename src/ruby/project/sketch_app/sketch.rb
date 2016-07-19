@@ -2,6 +2,8 @@ require "sinatra"
 
 set :public_folder, "public"
 
+@@hostname = ENV["PREDICTION_API"] 
+
 get "/" do
-  redirect("/index.html")
+  erb :index
 end

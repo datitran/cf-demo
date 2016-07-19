@@ -17,17 +17,17 @@
     <script src="/js/jquery-latest.js"></script>
     <script src='/js/sketch.js'></script>
     <script type='text/javascript'>
+      function dataURLtoBlob(dataurl) {
+          var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+              bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+          while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          return new Blob([u8arr], {type:mime});
+      }
+
       $(function() {
         $('#simple_sketch').sketch();
-
-        function dataURLtoBlob(dataurl) {
-            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new Blob([u8arr], {type:mime});
-        }
 
         $("#predict-link").on("click", function() {
           var dataUrl = $("#simple_sketch")[0].toDataURL();
@@ -37,7 +37,7 @@
 
           $.ajax({
             type: "POST",
-            url: "http://cf-predict.local.pcfdev.io/prediction",
+            url:  "<%= @@hostname %>/prediction",
             contentType: false,
             cache: false,
             processData: false,
@@ -45,7 +45,6 @@
             data: formData
           }).done(function(data) {
             $("#prediction").text(data);
-            console.log("success");
           }).fail(function() {
             console.log("fail");
           });
@@ -55,3 +54,4 @@
 
   </body>
 </html>
+
