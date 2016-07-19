@@ -1,3 +1,4 @@
+import re
 import json
 import os
 import sys
@@ -27,13 +28,21 @@ else:
 try:
     r = redis.StrictRedis(**redis_env)
     r.info()
-except redis.ConnectionError:
+except redis.ConnectionError as e:
+    print(e)
     r = None
 
 def get_model(redis):
-    """Get model from redis and compile it."""
-    model = model_from_json(redis.get("model").decode("UTF-8"))
-    weights = redis.get("weights")
+    """Get the most recent model from redis and compile it."""
+    recent_model = sorted([m.group(0) for l in r.keys()
+                 for m in [re.compile(".*_model").search(l.decode("UTF-8"))]
+                 if m], reverse = True)[0]
+    recent_weights = sorted([m.group(0) for l in r.keys()
+                 for m in [re.compile(".*_weights").search(l.decode("UTF-8"))]
+                 if m], reverse = True)[0]
+
+    model = model_from_json(redis.get(recent_model).decode("UTF-8"))
+    weights = redis.get(recent_weights)
     with open("mnist_mlp_weights.h5", "wb") as f:
         f.write(weights)
     model.load_weights("mnist_mlp_weights.h5")
